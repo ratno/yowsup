@@ -9,17 +9,6 @@ import binascii
 import sys
 import logging
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-# create file handler which logs even debug messages
-fh = logging.FileHandler('/var/log/yowsup_failed_number.log')
-fh.setLevel(logging.DEBUG)
-# create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-# add the handlers to the logger
-logger.addHandler(fh)
-
 class ResultGetKeysIqProtocolEntity(ResultIqProtocolEntity):
     """
     <iq type="result" from="s.whatsapp.net" id="3">
@@ -96,7 +85,18 @@ class ResultGetKeysIqProtocolEntity(ResultIqProtocolEntity):
             preKeyNode = userNode.getChild("key")
             
             if (preKeyNode is None):
+                logger = logging.getLogger(__name__)
+                logger.setLevel(logging.DEBUG)
+                # create file handler which logs even debug messages
+                fh = logging.FileHandler('/var/log/yowsup_failed_number.log')
+                fh.setLevel(logging.DEBUG)
+                # create formatter and add it to the handlers
+                formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                fh.setFormatter(formatter)
+                # add the handlers to the logger
+                logger.addHandler(fh)
                 logger.warning("Failed to receive preKeyNode for %s"%(userNode.getAttributeValue("jid") if "jid" in userNode.attributes else "unknown"))
+                
                 # it seems, simply using None for IDs breaks sending, but at last allows receiving
                 preKeyId = None
                 preKeyPublic = None
